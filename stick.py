@@ -1,8 +1,9 @@
-#!/bin/env python
+#!/bin/env python3
 import discord
 import asyncio
 import logging
 import os
+from commands import BotCommands as cmd
 from os.path import join, dirname
 from dotenv import load_dotenv
 
@@ -13,6 +14,7 @@ load_dotenv(dotenv_path)
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -20,11 +22,30 @@ async def on_ready():
     print(client.user.id)
     print('------')
 
+
 @client.event
 async def on_message(message):
     if message.content.startswith('!'):
-        response = 'Sorry bottu-chan is being reworked into a Sticky-bot, I can\'t hande commands yet :\('
-        ans = await client.send_message(message.channel, response)
-        logging.info(message.author.name + ': ' + message.content + ' response: ' + response)
+        message_command, *message_contents = message.content.split()
+
+        message_handlers = {
+            "!help": cmd.help_message,
+            "!activiteit": cmd.get_activity,
+            "!activiteiten": cmd.list_activities
+        }
+
+        if message_command not in message_handlers:
+            return
+
+        response = await message_handlers[message_command](message_contents, message)
+
+        if not response:
+            await client.send_message(message.channel,
+                                      "Invalid use of command, or you are not authorized to use this command.")
+
+        if type(response) != discord.Embed:
+            await client.send_message(message.channel, response)
+        else:
+            await client.send_message(message.channel, embed=response)
 
 client.run(os.environ['DISCORD_TOKEN'])
