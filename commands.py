@@ -11,7 +11,6 @@ class BotCommands:
     @staticmethod
     async def get_activity(cont, mesg):
         activity_list = await api.get_activities()
-        print(cont)
         if len(cont) > 0:
             for act in activity_list:
                 if act["name"].lower() == ' '.join(cont).lower():
