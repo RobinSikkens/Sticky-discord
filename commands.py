@@ -11,11 +11,12 @@ class BotCommands:
     @staticmethod
     async def get_activity(cont, mesg):
         activity_list = await api.get_activities()
-        for act in activity_list:
-            if len(cont) == 0:
-                break
-            if act["name"].lower() == ' '.join(cont.lower()):
-                return BotCommands.print_activity(act)
+        print(cont)
+        if len(cont) > 0:
+            for act in activity_list:
+                if act["name"].lower() == ' '.join(cont).lower():
+                    return BotCommands.print_activity(act)
+            return 'Kon geen activiteit vinden met de naam: \"' + ' '.join(cont) + '\"'
         activity = activity_list[0]
         return BotCommands.print_activity(activity)
 
@@ -35,14 +36,16 @@ class BotCommands:
         date_begin = dateparser.parse(act["start_date"])
         date_end = dateparser.parse(act["end_date"])
 
+        if "partcipant_counter" not in act:
+            prts = ""
+        else:
+            prts = f'\n**Inschrijvingen**: {act["participant_counter"]}'
         if date_begin.date() != date_end.date():
-            embed.add_field(name=act["name"], value=f'**Locatie**: {act["location"]}\n**Inschrijvingen**: '
-                                                    f'{act["participant_counter"]}\n**Begin**: '
+            embed.add_field(name=act["name"], value=f'**Locatie**: {act["location"]}{prts}\n**Begin**: '
                                                     f'{date_begin.date()}: {date_begin.time()}\n**Eind**: '
                                                     f'{date_end.date()}: {date_end.time()}')
         else:
-            embed.add_field(name=act["name"], value=f'**Locatie**: {act["location"]}\n**Inschrijvingen**: '
-                                                    f'{act["participant_counter"]}\n**Datum**: '
+            embed.add_field(name=act["name"], value=f'**Locatie**: {act["location"]}{prts}\n**Datum**: '
                                                     f'{date_begin.date()}\n**Tijd**: {date_begin.time()} - '
                                                     f'{date_end.time()}')
         embed.set_image(url=act["poster"])
