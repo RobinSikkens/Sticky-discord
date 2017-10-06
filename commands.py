@@ -1,5 +1,7 @@
 import discord
-import dateutil.parser as dateparser
+import pickle
+import os
+import random
 from sticky_api import StickyAPI as api
 
 
@@ -13,11 +15,11 @@ class BotCommands:
         activity_list = await api.get_activities()
         if len(cont) > 0:
             for act in activity_list:
-                if act["name"].lower() == ' '.join(cont).lower():
-                    return BotCommands.print_activity(act)
+                if ' '.join(cont).lower() in act["name"].lower():
+                    return api.print_activity(act)
             return 'Kon geen activiteit vinden met de naam: \"' + ' '.join(cont) + '\"'
         activity = activity_list[0]
-        return BotCommands.print_activity(activity)
+        return api.print_activity(activity)
 
     @staticmethod
     async def list_activities(cont, mesg):
@@ -27,25 +29,36 @@ class BotCommands:
             ret = ret + "\n" + act["name"]
         return ret
 
+    @staticmethod
+    async def add_quote(cont, mesg):
+        quote = ' '.join(cont)
+
+        if not os.path.isfile("quote_file.pk1"):
+            quote_list = []
+        else:
+            with open("quote_file.pk1", "rb") as file:
+                quote_list = pickle.load(file)
+
+        quote_list.append(quote)
+
+        with open("quote_file.pk1", "wb") as file:
+            pickle.dump(quote_list, file)
+
+        return "Saved quote to file."
+
 
     @staticmethod
-    def print_activity(act):
-        embed = discord.Embed(color=discord.Colour(0xce2029))
+    async def print_quote(cont, mesg):
+        if not os.path.isfile("quote_file.pk1"):
+            return "No quotes saved."
 
-        date_begin = dateparser.parse(act["start_date"])
-        date_end = dateparser.parse(act["end_date"])
+        with open("quote_file.pk1", "rb") as file:
+            quote_list = pickle.load(file)
 
-        if "partcipant_counter" not in act:
-            prts = ""
-        else:
-            prts = f'\n**Inschrijvingen**: {act["participant_counter"]}'
-        if date_begin.date() != date_end.date():
-            embed.add_field(name=act["name"], value=f'**Locatie**: {act["location"]}{prts}\n**Begin**: '
-                                                    f'{date_begin.date()}: {date_begin.time()}\n**Eind**: '
-                                                    f'{date_end.date()}: {date_end.time()}')
-        else:
-            embed.add_field(name=act["name"], value=f'**Locatie**: {act["location"]}{prts}\n**Datum**: '
-                                                    f'{date_begin.date()}\n**Tijd**: {date_begin.time()} - '
-                                                    f'{date_end.time()}')
-        embed.set_image(url=act["poster"])
-        return embed
+            if len(cont) == 0:
+                quote = random.choice(quote_list)
+            else:
+                quote = discord.utils.find(lambda s: ' '.join(cont.lower()) in s.lower(), quote_list)
+
+            return quote
+

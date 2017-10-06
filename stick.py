@@ -31,7 +31,9 @@ async def on_message(message):
         message_handlers = {
             "!help": cmd.help_message,
             "!activiteit": cmd.get_activity,
-            "!activiteiten": cmd.list_activities
+            "!activiteiten": cmd.list_activities,
+            "!addquote": cmd.add_quote,
+            "!quote": cmd.print_quote
         }
 
         if message_command not in message_handlers:
@@ -43,9 +45,10 @@ async def on_message(message):
             await client.send_message(message.channel,
                                       "Invalid use of command, or you are not authorized to use this command.")
 
-        if type(response) != discord.Embed:
-            await client.send_message(message.channel, response)
-        else:
+        if type(response) == discord.Embed:
             await client.send_message(message.channel, embed=response)
+        else:
+            await client.send_message(message.channel, response)
 
-client.run(os.environ['DISCORD_TOKEN'])
+if __name__ == '__main__':
+    client.run(os.environ['DISCORD_TOKEN'])
