@@ -10,10 +10,14 @@ run `git clone git@github.com:RobinSikkens/Sticky-bot`
 
 run `pip install -U -r requirements.txt`
 
-3. Flag the main file executable:
+3. Make an env file
+
+make file `.env` containing token `DISCORD_TOKEN=`
+
+4. Flag the main file executable:
 
 run `chmod +x stick.py`
 
-4. Execute the main file:
+5. Execute the main file:
 
 run `./stick.py`
