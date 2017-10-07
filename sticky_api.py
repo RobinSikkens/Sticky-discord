@@ -20,14 +20,14 @@ class StickyAPI:
         if "partcipant_counter" not in act:
             prts = ""
         else:
-            prts = f'\n**Inschrijvingen**: {act["participant_counter"]}'
+            prts = '\n**Inschrijvingen**: %(act["participant_counter"])s' % locals()
         if date_begin.date() != date_end.date():
-            embed.add_field(name=act["name"], value=f'**Locatie**: {act["location"]}{prts}\n**Begin**: '
-                                                    f'{date_begin.date()}: {date_begin.time()}\n**Eind**: '
-                                                    f'{date_end.date()}: {date_end.time()}')
+            embed.add_field(name=act["name"], value='**Locatie**: %(act["location"])s%(prts)s\n**Begin**: '
+                                                    '%(date_begin.date())s: %(date_begin.time())s\n**Eind**: '
+                                                    '%(date_end.date())s: %(date_end.time())s') % locals()
         else:
-            embed.add_field(name=act["name"], value=f'**Locatie**: {act["location"]}{prts}\n**Datum**: '
-                                                    f'{date_begin.date()}\n**Tijd**: {date_begin.time()} - '
-                                                    f'{date_end.time()}')
+            embed.add_field(name=act["name"], value='**Locatie**: %(act["location"])s%(prts)s\n**Datum**: '
+                                                    '%(date_begin.date())s\n**Tijd**: %(date_begin.time())s - '
+                                                    '%(date_end.time())s') % locals()
         embed.set_image(url=act["poster"])
         return embed
