@@ -5,19 +5,6 @@ import random
 from functools import wraps
 from sticky_api import StickyAPI as api
 
-def is_administrator(func):
-    @wraps(func)
-    def newfunc(cont, mesg):
-        if mesg.author.permissions_in(mesg.channel).administrator:
-            return func(cont, mesg)
-        return not_authorized()
-
-    return newfunc
-
-
-async def not_authorized():
-    return "You are not authorized to use this command"
-
 
 class BotCommands:
     @staticmethod
@@ -78,4 +65,15 @@ class BotCommands:
             return quote
 
 
+def is_administrator(func):
+    @wraps(func)
+    def newfunc(cont, mesg):
+        if mesg.author.permissions_in(mesg.channel).administrator:
+            return func(cont, mesg)
+        return not_authorized()
 
+    return newfunc
+
+
+async def not_authorized():
+    return "You are not authorized to use this command"
