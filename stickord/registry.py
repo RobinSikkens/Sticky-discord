@@ -67,6 +67,25 @@ class Command(RegisteringDecorator):
                 )
         return super().__call__(func)
 
+
+def whitelist_only(whitelist):
+    '''Checks whether the caller is a role that is whitelisted for this command'''
+    def whitelist_decorator(func):
+        @wraps(func)
+        def wrapper(_cont, mesg):
+            # If any of the user's roles are in the whitelist allow use.
+            if set([f.name for f in mesg.author.roles]) & set(whitelist):
+                return func(_cont, mesg)
+            return not_authorized()
+
+        return wrapper
+
+    # Make help available
+    whitelist_only.__doc__ = whitelist_decorator.__doc__
+
+    return whitelist_decorator
+
+
 def admin_only(func):
     ''' Helper function to only allow Admins to use command. '''
     @wraps(func)
