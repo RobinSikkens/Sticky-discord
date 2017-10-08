@@ -16,6 +16,8 @@ async def get_recent():
 async def get_by_id(comic_id):
     ''' Get and parse an xkcd comic based on the comic id. '''
     response = requests.get(f'https://xkcd.com/{comic_id}/info.0.json')
+    if not response.text:
+        return await get_recent()
     return json.loads(response.text)
 
 async def get_random():
