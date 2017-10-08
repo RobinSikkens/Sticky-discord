@@ -14,6 +14,7 @@ setup(
         'asyncio',
         'python-dateutil',
         'requests',
+        'wolframalpha',
     ],
     packages=['stickord'],
     zip_safe=False,
