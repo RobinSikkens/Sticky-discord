@@ -72,7 +72,9 @@ async def delete_quote(cont, _mesg):
     with open(QUOTEFILE, 'rb') as qfile:
         quote_list = pickle.load(qfile)
 
-    quote_list.remove(remove_string)
+    if remove_string in quote_list:
+        quote_list.remove(remove_string)
+        return 'No such quote on file.'
 
     with open(QUOTEFILE, 'wb') as qfile:
         pickle.dump(quote_list, qfile)
