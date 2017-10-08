@@ -20,12 +20,12 @@ async def get_by_id(comic_id):
 
 async def get_random():
     ''' Get and parse a random xkcd comic. '''
-    latest = get_recent()
+    latest = await get_recent()
     max_id = latest['num']
     rnd = random.randint(1, max_id)
     if rnd == 404:
-        return get_random()
-    return get_by_id(rnd)
+        return await get_random()
+    return await print_comic(await get_by_id(rnd))
 
 
 async def print_comic(comic):
