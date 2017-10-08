@@ -9,3 +9,9 @@ from stickord.registry import admin_only, Command
 async def admintest(_cont, _mesg):
     ''' Admintest. '''
     return ':tada: Jij zit bij de koele kids klup! :sunglasses: :sunglasses:'
+
+@Command('crashme', hidden=True)
+@admin_only
+async def crashtest(_cont, _mesg):
+    ''' Test command killing on error. '''
+    raise NotImplementedError

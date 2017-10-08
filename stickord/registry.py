@@ -105,9 +105,9 @@ async def safe_call(target_dict, key, *args, **kwargs):
         raise
     except Exception as ex: # pylint: disable=broad-except
         # Disable command
-        del target_dict[key]
+        del target_dict[key.upper()]
 
-        LOGGER.error('Command %s disabled')
+        LOGGER.error('Command %s disabled', key)
         LOGGER.exception(ex)
 
         return "Something broke, command disabled."
