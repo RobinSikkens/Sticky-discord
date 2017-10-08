@@ -8,9 +8,12 @@ from stickord.registry import Command
 async def get_comic(cont, _mesg):
     ''' Search for a comic by id, if no id is provided it will post a random comic. '''
     if cont:
-        comic_id = int(cont[0])
-        comic = await get_by_id(comic_id)
-        return await print_comic(comic)
+        try:
+            comic_id = int(cont[0])
+            comic = await get_by_id(comic_id)
+            return await print_comic(comic)
+        except ValueError:
+            pass
 
     comic = await get_random()
     return await print_comic(comic)
