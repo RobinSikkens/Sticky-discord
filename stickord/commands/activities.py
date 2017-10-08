@@ -5,7 +5,7 @@ from stickord.helpers.sticky_api import get_activities, print_activity
 from stickord.registry import Command
 
 
-@Command('activiteit', category='Sticky')
+@Command(['activiteit', 'activity', 'act'], category='Sticky')
 async def get_activity(cont, _mesg):
     ''' Search for an activity by name, or print the first. '''
     acts = await get_activities()
@@ -21,7 +21,7 @@ async def get_activity(cont, _mesg):
     act = acts[0]
     return await print_activity(act)
 
-@Command('activiteiten', category='Sticky')
+@Command(['activiteiten', 'activities', 'acts'], category='Sticky')
 async def list_activities(_cont, _mesg):
     ''' List all upcoming activities. '''
     acts = await get_activities()

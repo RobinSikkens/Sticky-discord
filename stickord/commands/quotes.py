@@ -14,7 +14,7 @@ from stickord.helpers.logging import get_easy_logger
 QUOTEFILE = 'quote_file.pk1'
 LOGGER = get_easy_logger('quotes')
 
-@Command('addquote', category='Quotes')
+@Command(['addquote', 'aq'], category='Quotes')
 async def add_quote(cont, _):
     ''' Add a quote to the quotesfile. '''
     quote = ' '.join(cont)
@@ -33,7 +33,7 @@ async def add_quote(cont, _):
 
     return 'Quote saved!'
 
-@Command('quote', category='Quotes')
+@Command(['quote', 'q'], category='Quotes')
 async def print_quote(cont, _):
     ''' Print a random quote. '''
     if not os.path.isfile(QUOTEFILE):
