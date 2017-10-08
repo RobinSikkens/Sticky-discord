@@ -25,8 +25,7 @@ async def get_random():
     rnd = random.randint(1, max_id)
     if rnd == 404:
         return await get_random()
-    ret = await get_by_id(rnd)
-    return await print_comic(ret)
+    return get_by_id(rnd)
 
 
 async def print_comic(comic):
