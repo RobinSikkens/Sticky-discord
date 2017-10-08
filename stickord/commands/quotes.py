@@ -63,7 +63,7 @@ async def print_quote(cont, _):
 @Command(['deletequote', 'delquote'], category='Quotes')
 @whitelist_only(['Admin', 'Moderator'])
 async def delete_quote(cont, _mesg):
-    '''Deletes the specified quote from the quotelist. Entire quote has to match.'''
+    '''Deletes the specified quote from the quotelist. Entire quote has to match. (Moderator only)'''
     if not os.path.isfile(QUOTEFILE):
         return 'No quotes to delete.'
 
