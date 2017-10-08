@@ -18,9 +18,22 @@ LOGGER = get_easy_logger('bot')
 
 @CLIENT.event
 async def on_ready():
-    ''' Print logging info about bot. '''
-    logging.info('Logged in as: %s (%s).',
-                 CLIENT.user.name, CLIENT.user.id)
+    ''' Register handler for webhook, print logging info about bot. '''
+    if os.environ.get('LOGGING_WEBHOOK_URL', None):
+        LOGGER.info('Setting up webhook.')
+        handler = stickord.helpers.logging.DiscordWebhookHandler(
+            os.environ['LOGGING_WEBHOOK_URL'],
+            level=os.environ.get('WEBHOOK_LOGLEVEL', 'WARNING')
+        )
+        handler.setLevel(
+            os.environ.get('WEBHOOK_LOGLEVEL', 'WARNING')
+        )
+
+        # Attach to root logger, which all loggers route through.
+        logging.getLogger('').addHandler(handler)
+
+    LOGGER.info('Logged in as: %s (%s).',
+                CLIENT.user.name, CLIENT.user.id)
 
 @CLIENT.event
 async def on_message(message):
@@ -56,19 +69,15 @@ async def on_message(message):
 def main():
     ''' Initialize and start the bot. '''
     # Load environment
-    dotenv_path = os.path.join(
-        os.path.dirname(__file__), '.env'
-    )
-    load_dotenv(dotenv_path)
+    load_dotenv('.env')
 
     # Setup logging
     loglevel = os.environ.get('STICKORD_LOGLEVEL', 'INFO')
     logging.basicConfig(
         filename='bot.log',
-        level=getattr(logging, loglevel),
+        level=loglevel,
         format='[%(asctime)s]%(name)s: %(levelname)s: %(message)s'
     )
-
 
     # Load commands
     stickord.commands.load_plugins()
