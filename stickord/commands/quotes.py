@@ -45,7 +45,7 @@ async def print_quote(cont, _):
         quote_list = pickle.load(qfile)
         LOGGER.debug('Quotelist: %s', quote_list)
         # If the list is empty (due to a possible delete) move on.
-        if len(quote_list) == 0:
+        if not quote_list:
             LOGGER.debug('Empty quotelist found, aborting...')
             return 'No quotes saved.'
 

@@ -70,6 +70,7 @@ class Command(RegisteringDecorator):
 
 def whitelist_only(whitelist):
     '''Checks whether the caller is a role that is whitelisted for this command'''
+    # pylint: disable=missing-docstring
     def whitelist_decorator(func):
         @wraps(func)
         def wrapper(_cont, mesg):

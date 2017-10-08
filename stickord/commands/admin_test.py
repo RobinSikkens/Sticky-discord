@@ -1,7 +1,7 @@
 '''
-Test for hidden, admin-only command.
+Test for hidden, admin-only commands.
 '''
-from stickord.registry import admin_only, Command, whitelist_only
+from stickord.registry import Command, whitelist_only
 
 
 @Command('supersecret', hidden=True)
