@@ -80,7 +80,7 @@ def admin_only(func):
 
     return newfunc
 
-def not_authorized():
+async def not_authorized():
     ''' Warning for plebeians. '''
     return "You are not authorized to use this command."
 
