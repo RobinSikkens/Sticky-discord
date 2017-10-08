@@ -16,5 +16,10 @@ setup(
         'requests',
     ],
     packages=['stickord'],
-    zip_safe=False
+    zip_safe=False,
+    entry_points={
+        'console_scripts': [
+            'runbot=stickord.bot:main'
+        ]
+    }
 )
