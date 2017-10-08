@@ -18,4 +18,5 @@ async def get_comic(cont, _mesg):
 @Command('newxkcd', category='xkcd')
 async def get_latest_comic(_cont, _mesg):
     ''' Posts the latest xkcd comic. '''
-    return await get_recent()
+    comic = await get_recent()
+    return await print_comic(comic)
