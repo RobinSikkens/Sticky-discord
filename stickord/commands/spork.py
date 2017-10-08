@@ -5,7 +5,7 @@ from stickord.registry import Command
 async def eightball(cont, mesg):
     '''The wise magic 8-ball will know what to do with whatever query you might have'''
     with open("eightball_responses.txt", "r") as f:
-        response = random.choice(f.readlines())
+        response = mesg.author.mention + ", the magic 8-ball has spoken!: " + random.choice(f.readlines())
     return response
 
 @Command(['flip', 'coinflip', 'muntje'], category="Spork")
