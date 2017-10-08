@@ -6,18 +6,22 @@ To run an instance of this bot:
 
 run `git clone git@github.com:RobinSikkens/Sticky-bot`
 
-2. Install python libraries:
+2. Create a virtualenv:
 
-run `pip install -U -r requirements.txt`
+run `python3.6 -m venv virtualenv`
 
-3. Make an env file
+3. Activate the virtualenv:
 
-make file `.env` containing token `DISCORD_TOKEN=`
+run `source virtualenv/bin/activate`
 
-4. Flag the main file executable:
+4. Install package and dependencies:
 
-run `chmod +x stick.py`
+run `python setup.py install` or `python setup.py develop`
 
-5. Execute the main file:
+5. Make an env file
 
-run `./stick.py`
+make file `.env` containing token `DISCORD_TOKEN=` and optionally `STICKORD_LOGLEVEL=`
+
+5. Start the bot with the virtualenv active:
+
+run `python -m stickord.bot`

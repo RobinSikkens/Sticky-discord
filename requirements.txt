@@ -3,3 +3,4 @@ discord.py
 asyncio
 python-dateutil
 requests
+pylint
