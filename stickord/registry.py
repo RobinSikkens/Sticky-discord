@@ -68,7 +68,7 @@ class Command(RegisteringDecorator):
         return super().__call__(func)
 
 
-def whitelist_only(whitelist):
+def role_whitelist(whitelist):
     '''Checks whether the caller is a role that is whitelisted for this command'''
     # pylint: disable=missing-docstring
     def whitelist_decorator(func):
@@ -81,8 +81,20 @@ def whitelist_only(whitelist):
 
         return wrapper
 
-    # Make help available
-    whitelist_only.__doc__ = whitelist_decorator.__doc__
+    return whitelist_decorator
+
+def channel_whitelist(whitelist):
+    '''Checks whether the caller is in a channel that is whitelisted for this command'''
+    # pylint: disable=missing-docstring
+    def whitelist_decorator(func):
+        @wraps(func)
+        def wrapper(_cont, mesg, *args, **kwargs):
+            # If any of the user's roles are in the whitelist allow use.
+            if mesg.channel.name in set(whitelist):
+                return func(_cont, mesg, *args, **kwargs)
+            return null_command()
+
+        return wrapper
 
     return whitelist_decorator
 
@@ -99,6 +111,10 @@ def admin_only(func):
     newfunc.__doc__ = func.__doc__
 
     return newfunc
+
+async def null_command():
+    ''' Don't do a thing, but wait for it. '''
+    return None
 
 async def not_authorized():
     ''' Warning for plebeians. '''

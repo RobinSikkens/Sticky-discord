@@ -1,9 +1,12 @@
+'''
+Fun & Games
+'''
 from datetime import datetime
 
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
-from stickord.registry import Command, get_easy_logger
+from stickord.registry import Command, get_easy_logger, channel_whitelist
 
 
 Base = declarative_base() # pylint: disable=invalid-name
@@ -24,6 +27,7 @@ class Tel(Base):
                 f' {self.created_at})>')
 
 @Command(['tellen', 'tel'], category='Games')
+@channel_whitelist(['botabuse', 'spam'])
 async def counting(cont, mesg, client, sessionmaker, *_args, **_kwargs):
     ''' Allows  users to play the counting game. The command should be entered
     with the number exactly 1 higher than the last time the command was
@@ -70,6 +74,16 @@ async def counting(cont, mesg, client, sessionmaker, *_args, **_kwargs):
 
         except ValueError:
             return 'Entered number was not valid.'
+
+@Command(['toptel'], category='Games')
+async def get_toptel(*args, **_kwargs):
+    ''' Get the highscore of the counting game. '''
+    sessionmaker = args[3]
+    session = sessionmaker()
+
+    toptel = session.query(Tel).order_by(Tel.count.desc()).first()
+
+    return f'The highest count ever reached is {toptel.count}.'
 
 def resettellen(session, author):
     ''' Reset counting to zero. '''

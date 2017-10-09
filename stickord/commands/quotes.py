@@ -7,7 +7,7 @@ import random
 
 import discord
 
-from stickord.registry import Command, whitelist_only
+from stickord.registry import Command, role_whitelist
 from stickord.helpers.logging import get_easy_logger
 
 
@@ -61,7 +61,7 @@ async def print_quote(cont, *_args, **_kwargs):
 
 
 @Command(['deletequote', 'delquote'], category='Quotes')
-@whitelist_only(['Admin', 'Moderator'])
+@role_whitelist(['Admin', 'Moderator'])
 async def delete_quote(cont, *_args, **_kwargs):
     '''Deletes the specified quote from the quotelist. Entire quote has to match. (Moderator only)'''
     if not os.path.isfile(QUOTEFILE):
