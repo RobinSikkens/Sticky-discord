@@ -16,7 +16,7 @@ LOGGER = get_easy_logger('quotes')
 
 
 @Command(['addquote', 'aq'], category='Quotes')
-async def add_quote(cont, _):
+async def add_quote(cont, *_args, **_kwargs):
     ''' Add a quote to the quotesfile. '''
     quote = ' '.join(cont)
 
@@ -36,7 +36,7 @@ async def add_quote(cont, _):
 
 
 @Command(['quote', 'q'], category='Quotes')
-async def print_quote(cont, _):
+async def print_quote(cont, *_args, **_kwargs):
     ''' Print a random quote. '''
     if not os.path.isfile(QUOTEFILE):
         return 'No quotes saved.'
@@ -62,7 +62,7 @@ async def print_quote(cont, _):
 
 @Command(['deletequote', 'delquote'], category='Quotes')
 @whitelist_only(['Admin', 'Moderator'])
-async def delete_quote(cont, _mesg):
+async def delete_quote(cont, *_args, **_kwargs):
     '''Deletes the specified quote from the quotelist. Entire quote has to match. (Moderator only)'''
     if not os.path.isfile(QUOTEFILE):
         return 'No quotes to delete.'

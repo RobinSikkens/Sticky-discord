@@ -8,7 +8,7 @@ from stickord.registry import Command, COMMAND_CATEGORIES
 
 
 @Command(['help', 'commands', 'watisdit'])
-async def command_help(_cont, _mesg):
+async def command_help(*_args, **_kwargs):
     ''' Show this help message. '''
     lines = []
     cats = COMMAND_CATEGORIES.keys()
