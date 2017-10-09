@@ -3,4 +3,5 @@ python:
     - "3.6"
 install:
     - "python setup.py develop"
+    - "pip install -r dev_requirements.txt"
 script: "pylint --errors-only stickord"
