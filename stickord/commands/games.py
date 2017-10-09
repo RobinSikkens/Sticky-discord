@@ -1,8 +1,9 @@
 import discord
 from stickord.registry import Command
 
-@Command(['tellen', 'tel'])
+@Command(['tellen', 'tel'], category='Games')
 async def counting(cont, mesg, client, *args, **kwargs):
+    ''' Allows  users to play the counting game. The command should be entered with the number exactly 1 higher than the last time the command was entered. Cannot submit a number twice in a row.'''
     count, auth, when = (0, discord.User, None)
     if cont:
         try:
