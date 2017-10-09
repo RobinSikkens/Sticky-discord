@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo 'Running pre-commit pylint.'
+echo 'Will abort on style violations, skip by passing --no-verify'
+
+# `git commit` cd's to repo root
+source venv/bin/activate
+pylint stickord

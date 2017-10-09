@@ -11,7 +11,7 @@ LOGGER = get_easy_logger('commands.shutdown')
 
 @Command('botshutdown', hidden=True)
 @whitelist_only(['Admin', 'Moderator'])
-async def shutdown(_cont, mesg, *args, **kwargs):
+async def shutdown(_cont, mesg):
     ''' Shutdown bot by sending SIGINT. '''
-    LOGGER.critical('Shutdown initiated by {mesg.author.mention}')
+    LOGGER.critical('Shutdown initiated by %s', mesg.author.mention)
     os.kill(os.getpid(), signal.SIGQUIT)
