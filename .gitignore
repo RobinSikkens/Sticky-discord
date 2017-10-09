@@ -4,3 +4,4 @@
 __pycache__
 quote_file.pk1
 *.egg-info
+*.sqlite3

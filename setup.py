@@ -9,6 +9,8 @@ setup(
     description='A bot that talks to the Sticky API, written for Discord',
     url='https://github.com/RobinSikkens/Sticky-discord',
     install_requires=[
+        'SQLAlchemy',
+        'alembic',
         'python-dotenv',
         'discord.py',
         'asyncio',

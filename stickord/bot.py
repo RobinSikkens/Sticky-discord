@@ -6,6 +6,8 @@ import os
 
 import discord
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 import stickord.commands
 from stickord.helpers.logging import get_easy_logger
@@ -15,6 +17,9 @@ from stickord.registry import COMMAND_DICT, safe_call, CommandNotFoundError
 CLIENT = discord.Client()
 ''' Main discord.py Client. '''
 LOGGER = get_easy_logger('bot')
+
+DB_ENGINE = None
+DB_SESSION = None
 
 @CLIENT.event
 async def on_ready():
@@ -48,7 +53,8 @@ async def on_message(message):
                 COMMAND_DICT, message_command[1:],
                 message_contents,
                 message,
-                CLIENT
+                CLIENT,
+                DB_SESSION
             )
         except CommandNotFoundError:
             LOGGER.debug('Command %s unknown.', message_command[1:])
@@ -65,6 +71,7 @@ async def on_message(message):
 
 def main():
     ''' Initialize and start the bot. '''
+    global DB_ENGINE, DB_SESSION
     # Load environment
     load_dotenv('.env')
 
@@ -75,6 +82,11 @@ def main():
         level=loglevel,
         format='[%(asctime)s]%(name)s: %(levelname)s: %(message)s'
     )
+
+    # Connect to database
+    db_url = os.environ.get('DATABASE_URL', 'sqlite:///:memory:')
+    DB_ENGINE = create_engine(db_url)
+    DB_SESSION = sessionmaker(DB_ENGINE)
 
     # Load commands
     stickord.commands.load_plugins()
