@@ -6,7 +6,7 @@ import random
 from stickord.registry import Command
 
 @Command("8ball", category="Spork")
-async def eightball(_cont, mesg):
+async def eightball(_cont, mesg, *_args, **_kwargs):
     ''' The wise magic 8-ball will know what to do with whatever query you might have. '''
     with open("eightball_responses.txt", "r") as file:
         line = random.choice(file.readlines())
@@ -15,6 +15,6 @@ async def eightball(_cont, mesg):
     return response
 
 @Command(['flip', 'coinflip', 'muntje'], category="Spork")
-async def flipcoin(_cont, _mesg):
+async def flipcoin(*_args, **_kwargs):
     '''Flip a coin: Heads, Tails? Some fine dispute settling here'''
     return random.choice(['Heads', 'Tails'])

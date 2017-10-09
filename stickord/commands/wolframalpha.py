@@ -20,7 +20,7 @@ else:
     WA_CLIENT = wolframalpha.Client(os.environ['WOLFRAMALPHA_TOKEN'])
 
 @Command(['calc', 'calculate', 'watis'])
-async def wolframalpha_cmd(cont, _mesg):
+async def wolframalpha_cmd(cont, *_args, **_kwargs):
     ''' Send a query to WolframAlpha. '''
     if not WA_CLIENT:
         return 'WolframAlpha support not set up.'

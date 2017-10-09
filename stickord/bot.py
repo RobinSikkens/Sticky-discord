@@ -46,18 +46,15 @@ async def on_message(message):
         try:
             response = await safe_call(
                 COMMAND_DICT, message_command[1:],
-                message_contents, message
+                message_contents,
+                message,
+                CLIENT
             )
         except CommandNotFoundError:
             LOGGER.debug('Command %s unknown.', message_command[1:])
             return
 
         if not response:
-            await CLIENT.send_message(
-                message.channel,
-                'Invalid use of command, or you are not authorized to use'
-                ' this command.'
-            )
             return
 
         LOGGER.debug('Sending response %s', response)
