@@ -73,10 +73,10 @@ def whitelist_only(whitelist):
     # pylint: disable=missing-docstring
     def whitelist_decorator(func):
         @wraps(func)
-        def wrapper(_cont, mesg):
+        def wrapper(_cont, mesg, *args, **kwargs):
             # If any of the user's roles are in the whitelist allow use.
             if set([f.name for f in mesg.author.roles]) & set(whitelist):
-                return func(_cont, mesg)
+                return func(_cont, mesg, *args, **kwargs)
             return not_authorized()
 
         return wrapper
@@ -90,9 +90,9 @@ def whitelist_only(whitelist):
 def admin_only(func):
     ''' Helper function to only allow Admins to use command. '''
     @wraps(func)
-    def newfunc(cont, mesg): # pylint: disable=missing-docstring
+    def newfunc(cont, mesg, *args, **kwargs): # pylint: disable=missing-docstring
         if mesg.author.permissions_in(mesg.channel).administrator:
-            return func(cont, mesg)
+            return func(cont, mesg, *args, **kwargs)
         return not_authorized()
 
     # Make help available
