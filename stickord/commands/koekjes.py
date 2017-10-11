@@ -1,5 +1,5 @@
 '''
-Iedereen houdt van koekjes, in het echt en de vitruele variant.
+Iedereen houdt van koekjes, in het echt en de virtuele variant.
 '''
 from datetime import datetime
 
@@ -23,7 +23,7 @@ class Koekje(Base):
     created_at = sa.Column(sa.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        ''' Represent as <Koekje(id, countm author, created_at)>. '''
+        ''' Represent as <Koekje(id, count, author, created_at)>. '''
         return (f'<Koekje({self.id}, {self.count}, {self.author},'
                 f' {self.created_at})>')
 
@@ -70,7 +70,7 @@ async def vultrommel(_cont, msg, _client, sessionmaker, *_args, **_kwargs):
     ''' Refill the infamous koektrommel (Bestuur only). '''
     session = sessionmaker()
     resetkoekjes(session, msg.author)
-    return f'Geweldig {msg.author.mention} heeft de koektrommel bijgevuld!'
+    return f'Geweldig, {msg.author.mention} heeft de koektrommel bijgevuld!'
 
 
 def resetkoekjes(session, author):
