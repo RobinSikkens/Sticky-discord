@@ -48,6 +48,9 @@ async def add_to_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
         )
         response = (f'Oh! Something went wrong, '
                     f'I could not find 3 words to add to the story')
+    elif mesg.author.id == curr_story.author:
+        response = (f'You can\'t submit words twice in a row!\n'
+                    f'What anarchy that would be..')
     else:
         story_str = ' '.join(cont[:3])
         add_story_element(session, story_str, mesg.author, curr_story_id)
@@ -102,7 +105,7 @@ async def end_current_story(cont, mesg, _client, sessionmaker, *_args, **_kwargs
     add_story_element(session, '', mesg.author, current_story_id + 1)
     session.commit()
 
-    return None
+    return f'Story saved as \'{storyname}\'.'
 
 @Command(['openstory', 'loadstory'])
 async def load_story(cont, *_args, **_kwargs):
@@ -143,9 +146,10 @@ def print_story(name):
 
 
 def format_story(string):
-    s = string.strip(' \t\n\r')
-    s = s.replace('. ', '.\n')
-    return s
+    ''' Formats a string text to include endlines after "." and strip whitespaces from beginning and end. '''
+    string = string.strip(' \t\n\r')
+    string = string.replace('. ', '.\n')
+    return string
 
 
 
