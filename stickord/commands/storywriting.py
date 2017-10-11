@@ -70,7 +70,7 @@ async def print_current_story(*args, **_kwargs):
     else:
         curr_story_id = curr_story.story_id
 
-    return get_story(session, curr_story_id)
+    return format_story(get_story(session, curr_story_id))
 
 
 @Command(['endstory', 'finishstory'], category='Games')
@@ -92,7 +92,7 @@ async def end_current_story(cont, mesg, _client, sessionmaker, *_args, **_kwargs
     current_story_id = curr_story.story_id
 
     story = get_story(session, current_story_id)
-    storyname = ' '.join(cont)
+    storyname = ''.join(cont)
 
     if not storyname:
         return 'You can\'t save a story without a name!'
@@ -104,15 +104,48 @@ async def end_current_story(cont, mesg, _client, sessionmaker, *_args, **_kwargs
 
     return None
 
+@Command(['openstory', 'loadstory'])
+async def load_story(cont, *_args, **_kwargs):
+    ''' Loads a previously ended story by name. '''
+    storyname = ''.join(cont)
+    if not storyname:
+        return 'You have to enter a story name'
+
+    return print_story(storyname)
+
+
+
 def save_story(story, name):
     ''' Saves a story to a txt file in the Stories folder. '''
-    fpath = f'{name}.txt'
-    with open(os.path.join('Stories', fpath), 'a') as file:
+    fname = f'{name.lower()}.txt'
+    fpath = os.path.join('Stories', fname)
+
+    story = format_story(story)
+
+    with open(fpath, 'a') as file:
         file.write(story)
 
-    return
+    return None
 
 
+def print_story(name):
+    ''' Get's a saved story from file and returns the string. '''
+    fname = f'{name.lower()}.txt'
+    fpath = os.path.join('Stories', fname)
+
+    if not os.path.isfile(fpath):
+        return 'This story doesn\'t exist.'
+
+    with open(fpath, 'r') as file:
+        string = file.read()
+
+    return string
+
+
+def format_story(string):
+    s = string.strip(' \t\n\r')
+    s = s.replace('. ', '.\n')
+    return s
 
 
 
