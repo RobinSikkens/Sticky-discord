@@ -70,6 +70,7 @@ async def vultrommel(_cont, msg, _client, sessionmaker, *_args, **_kwargs):
     ''' Refill the infamous koektrommel (Bestuur only). '''
     session = sessionmaker()
     resetkoekjes(session, msg.author)
+    session.commit()
     return f'Geweldig, {msg.author.mention} heeft de koektrommel bijgevuld!'
 
 
