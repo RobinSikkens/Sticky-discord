@@ -28,7 +28,7 @@ class Koekje(Base):
                 f' {self.created_at})>')
 
 @Command('koekje', category='Algemeen')
-async def cookie(cont, mesg, client, sessionmaker, *_args, **_kwargs):
+async def cookie(_cont, mesg, client, sessionmaker, *_args, **_kwargs):
     ''' Gives the user a cookie. This cookie has no discernible function,
     representation or value. '''
     session = sessionmaker()
@@ -38,10 +38,10 @@ async def cookie(cont, mesg, client, sessionmaker, *_args, **_kwargs):
         LOGGER.info('No koektrommel yet, making one')
         resetkoekjes(session, client.user)
         count = KOEKTROMMEL
-        author = client.user.id
+        _author = client.user.id
         _when = datetime.utcnow()
     else:
-        count, author, _when = (
+        count, _author, _when = (
             koektrommel.count,
             koektrommel.author,
             koektrommel.created_at
@@ -65,8 +65,9 @@ async def cookie(cont, mesg, client, sessionmaker, *_args, **_kwargs):
     return response
 
 @Command(['vulkoekjes', 'koekjesbijvullen'], category='Algemeen')
-@role_whitelist('Admin', 'Bestuur')
-async def vultrommel(cont, msg, client, sessionmaker, *_args, **_kwargs):
+@role_whitelist(['Admin', 'Bestuur'])
+async def vultrommel(_cont, msg, _client, sessionmaker, *_args, **_kwargs):
+    ''' Refill the infamous koektrommel (Bestuur only). '''
     session = sessionmaker
     resetkoekjes(session, msg.author)
     return f'Geweldig {msg.author.mention} heeft de koektrommel bijgevuld!'
@@ -74,10 +75,11 @@ async def vultrommel(cont, msg, client, sessionmaker, *_args, **_kwargs):
 
 def resetkoekjes(session, author):
     ''' Reset koektrommel to 40. '''
-    setkoekjes(session, KOEKTROMMEL , author)
+    setkoekjes(session, KOEKTROMMEL, author)
 
 
 def setkoekjes(session, count, author):
+    ''' Set the koektrommel to a particular count'''
     LOGGER.debug(
         'Koektrommel set to %s cookies by %s (%s)',
         count, author.mention, author.id
