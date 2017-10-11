@@ -27,7 +27,7 @@ class Koekje(Base):
         return (f'<Koekje({self.id}, {self.count}, {self.author},'
                 f' {self.created_at})>')
 
-@Command('koekje', category='Algemeen')
+@Command('koekje', category='Sticky')
 async def cookie(_cont, mesg, client, sessionmaker, *_args, **_kwargs):
     ''' Gives the user a cookie. This cookie has no discernible function,
     representation or value. '''
@@ -55,20 +55,20 @@ async def cookie(_cont, mesg, client, sessionmaker, *_args, **_kwargs):
             mesg.author.mention, mesg.author.id
         )
         response = (f'Oh no! There\'s no cookie in the koektrommel'
-                    f'have someone from @Bestuur refill it.')
+                    f' have someone from @Bestuur refill it.')
     else:
         setkoekjes(session, num, mesg.author)
         await client.add_reaction(mesg, '\U0001f36a')
-        response = (f'Enjoy your non-existing virtual goodness!')
+        response = None
 
     session.commit()
     return response
 
-@Command(['vulkoekjes', 'koekjesbijvullen'], category='Algemeen')
+@Command(['vulkoekjes', 'koekjesbijvullen'], category='Sticky')
 @role_whitelist(['Admin', 'Bestuur'])
 async def vultrommel(_cont, msg, _client, sessionmaker, *_args, **_kwargs):
     ''' Refill the infamous koektrommel (Bestuur only). '''
-    session = sessionmaker
+    session = sessionmaker()
     resetkoekjes(session, msg.author)
     return f'Geweldig {msg.author.mention} heeft de koektrommel bijgevuld!'
 
