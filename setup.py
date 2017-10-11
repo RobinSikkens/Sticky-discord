@@ -20,6 +20,7 @@ setup(
     ],
     packages=['stickord'],
     zip_safe=False,
+    license='MIT',
     entry_points={
         'console_scripts': [
             'runbot=stickord.bot:main'
