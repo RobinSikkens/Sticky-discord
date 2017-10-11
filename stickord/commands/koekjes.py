@@ -12,7 +12,7 @@ LOGGER = get_easy_logger('commands.koekjes')
 KOEKTROMMEL = 40
 
 
-class Koekje(Base)
+class Koekje(Base):
     ''' Represent a single cookie '''
     __tablename__ = 'koekjes'
 
