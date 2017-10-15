@@ -41,7 +41,7 @@ async def add_quote(cont, mesg, client, sessionmaker, *_args, **_kwargs):
     save_quote(session, quote, mesg.author)
 
     session.commit()
-    await client.add_reaction(mesg, Emoji.Floppy)
+    await client.add_reaction(mesg, Emoji.Floppy.value)
     return None
 
 def save_quote(session, content, author):
@@ -55,7 +55,7 @@ def random_quote(session, query=None) -> Quote:
     dbq = session.query(Quote)
 
     if query:
-        dbq = dbq.where(Quote.c.content.like(f'%{query}%'))
+        dbq = dbq.filter(Quote.content.like(f'%{query}%'))
 
     matching = dbq.count()
     if matching:
@@ -100,18 +100,20 @@ async def print_quote(cont, _mesg, _c, sema, *_args, **_kwargs):
 
 @Command(['deletequote', 'delquote'], category='Quotes')
 @role_whitelist(['Admin', 'Moderator'])
-async def delete_quote(cont, _mesg, _c, sema, *_args, **_kwargs):
+async def delete_quote(cont, mesg, _c, sema, *_args, **_kwargs):
     '''Deletes the specified quote from the quotelist by id. (Moderator only)'''
     try:
         ids = [int(x) for x in cont]
     except ValueError as ex:
         return f'Invalid ID given, {ex}'
 
+    LOGGER.info('%s removing quotes %s', mesg.author.mention, ids)
+
     session = sema()
 
     toremove = session.query(Quote).filter(Quote.id.in_(ids))
     removed = toremove.count()
-    session.remove(toremove)
+    toremove.delete(False)
 
     session.commit()
 
