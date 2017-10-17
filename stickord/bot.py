@@ -47,6 +47,9 @@ async def on_message(message):
         message_command, *message_contents = message.content.split()
         LOGGER.debug('Message: %s, %s', message_command, message_contents)
 
+        if message.author == CLIENT.user:
+            return # No self-activation
+
         response = None
         try:
             response = await safe_call(
