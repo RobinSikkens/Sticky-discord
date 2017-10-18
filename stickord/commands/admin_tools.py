@@ -71,3 +71,93 @@ async def force_prune_message(cont, mesg, client, *_args, **_kwargs):
             pass
 
     return 'You have to enter the number of messages to be deleted.'
+
+
+@Command(['exprune', 'excludeprune'], category='Tools', hidden=True)
+@role_whitelist(['Admin', 'Moderator'])
+async def exclusive_prune_messages(cont, mesg, client, *_args, **_kwargs):
+    '''
+    Deletes up to x messages from the channel this command is posted in
+    skips messages that begin with string specified (Moderator only).
+    x does not include the command itself.
+    Can only delete messages from the last 14 days, up to 100 (including invocation).
+    USAGE: `!exprune 99 !as`
+    '''
+    if cont:
+        try:
+            messages = []
+            amount = int(cont[0]) + 1
+            exclude = ' '.join(cont[1:])
+
+            if amount > 100:
+                return 'Can only delete a maximum of 99 messages at a time.'
+            async for m in client.logs_from(mesg.channel, limit=amount):
+                if datetime.now() - m.timestamp > timedelta(days=14):
+                    LOGGER.warning(
+                        'Could not delete some messages, '
+                        'message might be older than 14 days. Timestamp: %s',
+                        m.timestamp
+                    )
+                    break
+
+                if not m.content.startswith(exclude):
+                    messages.append(m)
+
+            delcount = len(messages)
+
+            # As bulk deletion only works with more than 2 messages catch exception
+            if amount <= 2:
+                for message in messages:
+                    await client.delete_message(message)
+            else:
+                await client.delete_messages(messages)
+            LOGGER.info(f'Deleted {delcount} messaged from #{mesg.channel} by order of {mesg.author}')
+            return None
+        except ValueError:
+            pass
+    return 'You have to enter the number of messages to be deleted.'
+
+
+@Command(['inprune', 'includeprune'], category='Tools', hidden=True)
+@role_whitelist(['Admin', 'Moderator'])
+async def inclusive_prune_messages(cont, mesg, client, *_args, **_kwargs):
+    '''
+    Deletes up to x messages from the channel this command is posted in
+    if the message begins with string specified (Moderator only).
+    x does not include the command itself.
+    Can only delete messages from the last 14 days, up to 100 (including invocation).
+    USAGE: `!inprune 99 !help`
+    '''
+    if cont:
+        try:
+            messages = []
+            amount = int(cont[0]) + 1
+            include = ' '.join(cont[1:])
+
+            if amount > 100:
+                return 'Can only delete a maximum of 99 messages at a time.'
+            async for m in client.logs_from(mesg.channel, limit=amount):
+                if datetime.now() - m.timestamp > timedelta(days=14):
+                    LOGGER.warning(
+                        'Could not delete some messages, '
+                        'message might be older than 14 days. Timestamp: %s',
+                        m.timestamp
+                    )
+                    break
+
+                if m.content.startswith(include):
+                    messages.append(m)
+
+            delcount = len(messages)
+
+            # As bulk deletion only works with more than 2 messages catch exception
+            if amount <= 2:
+                for message in messages:
+                    await client.delete_message(message)
+            else:
+                await client.delete_messages(messages)
+            LOGGER.info(f'Deleted {delcount} messaged from #{mesg.channel} by order of {mesg.author}')
+            return None
+        except ValueError:
+            pass
+    return 'You have to enter the number of messages to be deleted.'
