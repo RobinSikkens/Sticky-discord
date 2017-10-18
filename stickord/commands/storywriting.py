@@ -106,7 +106,8 @@ async def end_current_story(cont, mesg, client, sessionmaker, *_args, **_kwargs)
     add_story_element(session, '', mesg.author, current_story_id + 1)
     session.commit()
 
-    post = await post_story(story, mesg.server, client)
+    storypost = f'{storyname}\n{story}'
+    post = await post_story(storypost, mesg.server, client)
     return f'Story saved as \'{storyname}\'.'
 
 @Command(['openstory', 'loadstory'], hidden=True)
