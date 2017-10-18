@@ -28,6 +28,7 @@ class StoryElement(Base):
         return (f'<StoryElement({self.id}, {self.story_string}, {self.author},'
                 f' {self.story_id}, {self.created_at})>')
 
+
 @Command(['addstory', 'as'], category='Games')
 async def add_to_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
     ''' Adds the (first) three words to the currently active story. '''
@@ -107,8 +108,9 @@ async def end_current_story(cont, mesg, client, sessionmaker, *_args, **_kwargs)
     session.commit()
 
     storypost = f'{storyname}\n{story}'
-    post = await post_story(storypost, mesg.server, client)
+    await post_story(storypost, mesg.server, client)
     return f'Story saved as \'{storyname}\'.'
+
 
 @Command(['openstory', 'loadstory'], hidden=True)
 @role_whitelist(['Admin', 'Moderator'])
@@ -128,10 +130,13 @@ async def undo_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
     WARNING: Does not take in to account story endings etc, use with discretion. '''
     session = sessionmaker()
 
-    if not cont:
-        x = 1
+    if cont:
+        try:
+            x = int(cont[0])
+        except ValueError:
+            return 'Could not parse value, did nothing.'
     else:
-        x = int(cont[0])
+        x = 1
 
     curr_selection = session.query(StoryElement)\
         .order_by(StoryElement.created_at.desc())[:x]
@@ -143,6 +148,7 @@ async def undo_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
     session.commit()
 
     return None
+
 
 def save_story(story, name):
     ''' Saves a story to a txt file in the Stories folder. '''
