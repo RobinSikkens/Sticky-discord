@@ -52,7 +52,7 @@ async def add_to_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
         )
         response = (f'Oh! Something went wrong, '
                     f'I could not find 3 words to add to the story')
-    elif mesg.author.id == curr_story.author and not genesis:
+    elif not genesis and mesg.author.id == curr_story.author:
         response = (f'You can\'t submit words twice in a row!\n'
                     f'What anarchy that would be..')
     else:
