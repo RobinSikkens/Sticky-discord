@@ -13,7 +13,7 @@ async def prune_messages(cont, mesg, client, *_args, **_kwargs):
     '''
     Deletes x messages from the channel this command is posted in (Moderator only).
     x does not include the command itself.
-    Can only delete messages from the last 14 days, up to 100 (including invocation). 
+    Can only delete messages from the last 14 days, up to 100 (including invocation).
     '''
     if cont:
         try:
@@ -38,7 +38,7 @@ async def prune_messages(cont, mesg, client, *_args, **_kwargs):
                     await client.delete_message(message)
             else:
                 await client.delete_messages(messages)
-            LOGGER.info(f'Deleted {amount} messaged from #{mesg.channel} by order of {mesg.author}')
+            LOGGER.info(f'Deleted {amount} messages from #{mesg.channel} by order of {mesg.author}')
             return None
         except ValueError:
             pass
@@ -64,7 +64,7 @@ async def force_prune_message(cont, mesg, client, *_args, **_kwargs):
             for message in messages:
                 await client.delete_message(message)
 
-            LOGGER.info(f'Force-deleted {amount} messaged from #{mesg.channel} by order of {mesg.author}')
+            LOGGER.info(f'Force-deleted {amount} messages from #{mesg.channel} by order of {mesg.author}')
             return None
 
         except ValueError:
@@ -77,7 +77,7 @@ async def force_prune_message(cont, mesg, client, *_args, **_kwargs):
 @role_whitelist(['Admin', 'Moderator'])
 async def exclusive_prune_messages(cont, mesg, client, *_args, **_kwargs):
     '''
-    Deletes up to x messages from the channel this command is posted in
+    Deletes up to x messages from the channel this command is posted in,
     skips messages that begin with string specified (Moderator only).
     x does not include the command itself.
     Can only delete messages from the last 14 days, up to 100 (including invocation).
@@ -111,7 +111,7 @@ async def exclusive_prune_messages(cont, mesg, client, *_args, **_kwargs):
                     await client.delete_message(message)
             else:
                 await client.delete_messages(messages)
-            LOGGER.info(f'Deleted {delcount} messaged from #{mesg.channel} by order of {mesg.author}')
+            LOGGER.info(f'Deleted {delcount} messages from #{mesg.channel} by order of {mesg.author}')
             return None
         except ValueError:
             pass
@@ -156,7 +156,7 @@ async def inclusive_prune_messages(cont, mesg, client, *_args, **_kwargs):
                     await client.delete_message(message)
             else:
                 await client.delete_messages(messages)
-            LOGGER.info(f'Deleted {delcount} messaged from #{mesg.channel} by order of {mesg.author}')
+            LOGGER.info(f'Deleted {delcount} messages from #{mesg.channel} by order of {mesg.author}')
             return None
         except ValueError:
             pass
