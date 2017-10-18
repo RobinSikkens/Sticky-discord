@@ -128,8 +128,7 @@ async def load_story(cont, *_args, **_kwargs):
 @Command(['storyundo', 'undostory'], hidden=True)
 @role_whitelist(['Admin', 'Moderator'])
 async def undo_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
-    ''' Deltetes the last x messages from the database (Moderator only).
-    WARNING: Does not take in to account story endings etc, use with discretion. '''
+    ''' Deltetes the last x messages from the database (Moderator only). '''
     session = sessionmaker()
 
     if cont:
@@ -140,7 +139,13 @@ async def undo_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
     else:
         x = 1
 
+    curr_story = session.query(StoryElement) \
+        .order_by(StoryElement.created_at.desc()).first()
+
+    s_id = curr_story.story_id
+
     curr_selection = session.query(StoryElement)\
+        .filter(StoryElement.story_id == s_id)\
         .order_by(StoryElement.created_at.desc())[:x]
 
     for entry in curr_selection:
