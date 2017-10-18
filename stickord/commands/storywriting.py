@@ -6,7 +6,7 @@ from datetime import datetime
 
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
-from stickord.registry import Command, get_easy_logger, role_whitelist
+from stickord.registry import Command, get_easy_logger, role_whitelist, channel_whitelist
 
 Base = declarative_base() # pylint: disable=invalid-name
 LOGGER = get_easy_logger('commands.storywriting')
@@ -30,6 +30,7 @@ class StoryElement(Base):
 
 
 @Command(['addstory', 'as'], category='Games')
+@channel_whitelist(['storywriting'])
 async def add_to_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
     ''' Adds the (first) three words to the currently active story. '''
     session = sessionmaker()
@@ -63,6 +64,7 @@ async def add_to_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
 
 
 @Command(['currentstory', 'printstory', 'cs'], category='Games')
+@channel_whitelist(['storywriting'])
 async def print_current_story(*args, **_kwargs):
     ''' Print the story that the creative masterminds are currently writing. '''
     session = args[3]()
