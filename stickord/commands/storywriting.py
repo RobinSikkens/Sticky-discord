@@ -78,7 +78,7 @@ async def print_current_story(*args, **_kwargs):
 
 @Command(['endstory', 'finishstory'], category='Games')
 @role_whitelist(['Admin', 'Moderator'])
-async def end_current_story(cont, mesg, _client, sessionmaker, *_args, **_kwargs):
+async def end_current_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
     ''' Ends the current story and save it under the name specified (Moderator only). '''
     session = sessionmaker()
 
@@ -95,6 +95,7 @@ async def end_current_story(cont, mesg, _client, sessionmaker, *_args, **_kwargs
     current_story_id = curr_story.story_id
 
     story = get_story(session, current_story_id)
+    story = format_story(story)
     storyname = ''.join(cont)
 
     if not storyname:
@@ -105,11 +106,13 @@ async def end_current_story(cont, mesg, _client, sessionmaker, *_args, **_kwargs
     add_story_element(session, '', mesg.author, current_story_id + 1)
     session.commit()
 
+    post = await post_story(story, mesg.server, client)
     return f'Story saved as \'{storyname}\'.'
 
-@Command(['openstory', 'loadstory'])
+@Command(['openstory', 'loadstory'], hidden=True)
+@role_whitelist(['Admin', 'Moderator'])
 async def load_story(cont, *_args, **_kwargs):
-    ''' Loads a previously ended story by name. '''
+    ''' Loads a previously ended story by name (Moderator only). '''
     storyname = ''.join(cont)
     if not storyname:
         return 'You have to enter a story name'
@@ -122,8 +125,6 @@ def save_story(story, name):
     ''' Saves a story to a txt file in the Stories folder. '''
     fname = f'{name.lower()}.txt'
     fpath = os.path.join('Stories', fname)
-
-    story = format_story(story)
 
     with open(fpath, 'a') as file:
         file.write(story)
@@ -174,3 +175,17 @@ def add_story_element(session, string, author, story):
         author=author_id,
         story_id=story
     ))
+
+async def post_story(story, server, client):
+    ''' Have the Client post the bot to the "stories" channel if it exists. '''
+    channel_list = server.channels
+    for channel in channel_list:
+        if channel.name.lower() == "stories":
+            response_channel = channel
+
+    if not channel:
+        return
+    return await client.send_message(response_channel, story)
+
+
+
