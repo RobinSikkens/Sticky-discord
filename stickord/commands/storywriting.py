@@ -121,6 +121,28 @@ async def load_story(cont, *_args, **_kwargs):
     return print_story(storyname)
 
 
+@Command(['storyundo', 'undostory'], hidden=True)
+@role_whitelist(['Admin', 'Moderator'])
+async def undo_story(cont, mesg, client, sessionmaker, *_args, **_kwargs):
+    ''' Deltetes the last x messages from the database (Moderator only).
+    WARNING: Does not take in to account story endings etc, use with discretion. '''
+    session = sessionmaker()
+
+    if not cont:
+        x = 1
+    else:
+        x = int(cont[0])
+
+    curr_selection = session.query(StoryElement)\
+        .order_by(StoryElement.created_at.desc())[:x]
+
+    for entry in curr_selection:
+        session.delete(entry)
+
+    await client.add_reaction(mesg, '\U000023ea')
+    session.commit()
+
+    return None
 
 def save_story(story, name):
     ''' Saves a story to a txt file in the Stories folder. '''
@@ -152,7 +174,6 @@ def format_story(string):
     string = string.strip(' \t\n\r')
     string = string.replace('. ', '.\n')
     return string
-
 
 
 def get_story(session, story_id):
@@ -187,6 +208,4 @@ async def post_story(story, server, client):
     if not channel:
         return
     return await client.send_message(response_channel, story)
-
-
 
