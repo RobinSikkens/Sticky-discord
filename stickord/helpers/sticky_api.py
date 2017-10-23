@@ -1,17 +1,18 @@
 '''
 Provides general helpers for getting activities.
 '''
-import json
-
 import discord
 import dateutil.parser as dateparser
-import requests
+import aiohttp
+from stickord.registry import get_easy_logger
+
+LOGGER = get_easy_logger('helpers.sticky_api')
 
 
 async def get_activities():
     ''' Get and parse activities list. '''
-    response = requests.get('https://koala.svsticky.nl/api/activities')
-    return json.loads(response.text)
+    async with aiohttp.get('https://koala.svsticky.nl/api/activities') as r:
+        return await r.json()
 
 async def print_activity(act):
     ''' Format an activity into an Embed. '''
@@ -25,7 +26,8 @@ async def print_activity(act):
 
     wanneer = duration(start, end)
 
-    embed.add_field(name='Locatie', value=act['location'])
+    if 'location' in act:
+        embed.add_field(name='Locatie', value=act['location'])
 
     if prts:
         embed.add_field(name='Inschrijvingen', value=prts)
