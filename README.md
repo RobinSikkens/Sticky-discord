@@ -60,6 +60,8 @@ one.
 	`WARNING` (default), `ERROR`, or `CRITICAL`. Discord rate limits webhooks,
 	do _not_ set the level to `DEBUG`, as this will fill up very quickly and
 	you won't get a notification.
+- `IMGFLIP_USERNAME` and `IMGFLIP_PASSWORD`, the login credentials for the
+  imgflip account the bot will use to generate pictures.
 
 	Webhook logging is intentionally not using the usual Discord API, as we
 	want the logging to be available without having successfully connected to
