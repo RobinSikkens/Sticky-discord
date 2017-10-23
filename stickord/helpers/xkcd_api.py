@@ -2,23 +2,21 @@
 Provides some help talking to the xkcds API
 '''
 
-import json
 import random
-
 import discord
-import requests
+import aiohttp
 
 async def get_recent():
     ''' Get and parse the most recent xkcd comic. '''
-    response = requests.get('https://xkcd.com/info.0.json')
-    return json.loads(response.text)
+    async with aiohttp.get('https://xkcd.com/info.0.json') as r:
+        return await r.json()
 
 async def get_by_id(comic_id):
     ''' Get and parse an xkcd comic based on the comic id. '''
-    response = requests.get(f'https://xkcd.com/{comic_id}/info.0.json')
-    if response.status_code == 404:
-        return await get_recent()
-    return json.loads(response.text)
+    async with aiohttp.get(f'https://xkcd.com/{comic_id}/info.0.json') as r:
+        if r.status == 404:
+            return await get_recent()
+        return await r.json()
 
 async def get_random():
     ''' Get and parse a random xkcd comic. '''
