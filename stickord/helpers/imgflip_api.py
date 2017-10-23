@@ -5,6 +5,10 @@ A helper class that talks to the imgflip API
 import json
 import discord
 import requests
+import aiohttp
+from stickord.registry import get_easy_logger
+
+LOGGER = get_easy_logger('helpers.imgflip_api')
 
 async def generate_meme(id, text_upper, text_bottom):
     ''' Generates a meme and returns the image link. '''
@@ -14,8 +18,9 @@ async def generate_meme(id, text_upper, text_bottom):
               'template_id': id,
               'text0': text_upper,
               'text1' : text_bottom}
-    response = requests.post(url, params=params)
-    return json.loads(response.text)
+    async with aiohttp.post(url, params=params) as r:
+        LOGGER.info('Doing imgflip POST request')
+        return await r.json()
 
 
 async def print_meme(meme):
