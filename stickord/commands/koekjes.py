@@ -50,7 +50,7 @@ async def cookie(_cont, mesg, client, sessionmaker, *_args, **_kwargs):
     num = count - 1
 
     if num < 0:
-        LOGGER.info(
+        LOGGER.debug(
             '%s (%s) tried to get a cookie but couldn\'t',
             mesg.author.mention, mesg.author.id
         )
@@ -69,9 +69,12 @@ async def cookie(_cont, mesg, client, sessionmaker, *_args, **_kwargs):
 async def vultrommel(_cont, msg, _client, sessionmaker, *_args, **_kwargs):
     ''' Refill the infamous koektrommel (Bestuur only). '''
     session = sessionmaker()
-    resetkoekjes(session, msg.author)
-    session.commit()
-    return f'Geweldig, {msg.author.mention} heeft de koektrommel bijgevuld!'
+    koektrommel = session.query(Koekje).order_by(Koekje.created_at.desc()).first()
+    if koektrommel.count == 0:
+        resetkoekjes(session, msg.author)
+        session.commit()
+        return f'Geweldig, {msg.author.mention} heeft de koektrommel bijgevuld!'
+    return f'Oh nee! Er passen niet zoveel koekjes in de koektrommel want hij is nog niet leeg!'
 
 
 def resetkoekjes(session, author):
