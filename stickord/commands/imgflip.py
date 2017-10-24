@@ -18,8 +18,15 @@ async def make_meme(cont, *_args, **_kwargs):
     except:
         id = get_meme_id(''.join(e for e in content[0].lower() if e.isalnum()))
 
-    text_up = content[1]
-    text_bot = content[2]
+    if len(content) >= 2:
+        text_up = content[1]
+    else:
+        text_up = ''
+
+    if len(content) >= 3:
+        text_bot = content[2]
+    else:
+        text_bot = ''
 
     meme = await generate_meme(id, text_up, text_bot)
     return await print_meme(meme)
